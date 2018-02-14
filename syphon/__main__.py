@@ -76,4 +76,73 @@ def _main(argv: list) -> int:
 if __name__ == '__main__':
     from sys import argv
 
+    # import pandas as pd
+    # from pandas import concat, DataFrame, Series
+    # from pandas.util.testing import makeCustomIndex
+    # from sortedcontainers import SortedDict
+    # from syphon.tests import make_dataframe
+
+    # from syphon.archive import datafilter
+
+    # def build(frame, meta_cvals, keylist, result=[]):
+    #     this_keylist = keylist.copy()
+    #     this_keylist.reverse()
+    #     header = None
+    #     try:
+    #         header = this_keylist.pop()
+    #     except IndexError:
+    #         result.append(frame)
+    #         return result
+    #     except:
+    #         raise
+
+    #     for val in meta_cvals[header]:
+    #         rows, _ = frame.shape
+    #         new_col = Series([val]*rows, name=header)
+    #         this_frame = concat([frame.copy(), new_col], axis=1)
+    #         try:
+    #             result = build(this_frame, meta_cvals, this_keylist, result=result)
+    #         except:
+    #             raise
+    #     return result
+
+    # def test(rows, cols, metadata_columns):
+    #     frame = make_dataframe(rows, cols)
+    #     meta_cvals = metadata_columns.copy()
+    #     keylist = list(meta_cvals.keys())
+
+    #     expected = build(frame, meta_cvals, keylist)
+
+    #     schema = SortedDict()
+    #     index = 0
+    #     for k in keylist:
+    #         schema[str(index)] = k
+    #         index += 1
+
+    #     alldata = DataFrame()
+    #     for f in expected:
+    #         alldata = concat([alldata, f])
+    #     alldata.reset_index(drop=True, inplace=True)
+
+    #     actual = datafilter(schema, alldata)
+
+    #     for e in expected:
+    #         match = None
+    #         for a in actual:
+    #             if e.equals(a):
+    #                 match = a.copy()
+    #                 break
+    #         if match is not None:
+    #             print('found a match!')
+    #             print(e)
+    #             print(match)
+    #         else:
+    #             print('no matches!')
+
+    #     return 0
+
+    # test(5,2,{})
+    # test(6,2,{})
+    # exit(0)
+
     exit(_main(argv))

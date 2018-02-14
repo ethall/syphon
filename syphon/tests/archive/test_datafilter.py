@@ -20,7 +20,7 @@ MAX_ROWS = 10
 MAX_COLS = 5
 
 class TestDataFilter(object):
-    random.seed(a=int(environ['PYTHONHASHSEED']))
+    random.seed(a=751)#int(environ['PYTHONHASHSEED']))
 
     def _build_dataframes(self, frame: DataFrame,
                           meta_cvals: dict,
