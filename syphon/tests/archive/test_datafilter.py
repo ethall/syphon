@@ -20,12 +20,13 @@ MAX_ROWS = 10
 MAX_COLS = 5
 
 class TestDataFilter(object):
-    random.seed(a=751)#int(environ['PYTHONHASHSEED']))
-
     def _build_dataframes(self, frame: DataFrame,
                           meta_cvals: dict,
                           keylist: list,
-                          result=[]) -> list:
+                          result=None) -> list:
+        if result is None:
+            result = []
+
         this_keylist = keylist.copy()
         this_keylist.reverse()
         header = None
@@ -36,6 +37,9 @@ class TestDataFilter(object):
             return result
         except:
             raise
+
+        if len(meta_cvals[header]) is 0:
+            return result
 
         for val in meta_cvals[header]:
             rows, _ = frame.shape
@@ -48,13 +52,11 @@ class TestDataFilter(object):
                 raise
         return result
 
-    @pytest.mark.slow
-    @pytest.mark.parametrize('rows', [r for r in range(1, MAX_ROWS + 1)])
-    @pytest.mark.parametrize('cols', [c for c in range(1, MAX_COLS + 1)])
-    def test_datafilter(self, rows, cols, metadata_columns):
+    def _test_dataframes(self, rows, cols, meta_cvals) -> (list, list):
+        """Return tuple is (expected, actual)."""
         data = make_dataframe(rows, cols)
-        meta_col_vals = metadata_columns.copy()
-        keys = list(metadata_columns.keys())
+        meta_col_vals = meta_cvals.copy()
+        keys = list(meta_cvals.keys())
 
         expected = self._build_dataframes(data, meta_col_vals, keys)
 
@@ -65,11 +67,50 @@ class TestDataFilter(object):
             index += 1
 
         alldata = DataFrame()
-        for f in expected:
-            alldata = concat([alldata, f])
-        alldata.reset_index(drop=True, inplace=True)
+        if len(expected) is 0:
+            alldata = data.copy()
+        else:
+            for f in expected:
+                alldata = concat([alldata, f])
+            alldata.reset_index(drop=True, inplace=True)
 
         actual = datafilter(schema, alldata)
+
+        return (expected, actual)
+
+    @pytest.mark.slow
+    @pytest.mark.parametrize('rows', [r for r in range(1, MAX_ROWS + 1)])
+    @pytest.mark.parametrize('cols', [c for c in range(1, MAX_COLS + 1)])
+    def test_datafilter_uniform_metadata(self, rows, cols, metadata_columns):
+        expected, actual = self._test_dataframes(rows, cols, metadata_columns)
+
+        if len(expected) is len(actual):
+            assert True
+            return
+
+        for e in expected:
+            match = None
+            for a in actual:
+                if e.equals(a):
+                    match = a.copy()
+                    break
+            if match is not None:
+                assert_frame_equal(e, match)
+            else:
+                msg='Could not find a matching frame in the filtered list.'
+                pytest.fail(msg=msg)
+
+    @pytest.mark.slow
+    @pytest.mark.parametrize('rows', [r for r in range(1, MAX_ROWS + 1)])
+    @pytest.mark.parametrize('cols', [c for c in range(1, MAX_COLS + 1)])
+    def test_datafilter_uneven_metadata(self, rows, cols,
+                                        metadata_random_columns):
+        expected, actual = self._test_dataframes(rows, cols,
+                                                 metadata_random_columns)
+
+        if len(expected) is len(actual):
+            assert True
+            return
 
         for e in expected:
             match = None

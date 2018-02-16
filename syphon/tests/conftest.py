@@ -40,7 +40,7 @@ def metadata_column_headers(request):
     else:
         return list(makeCustomIndex(request.param, 1, prefix='M'))
 
-@pytest.fixture(params=[x for x in range(1, MAX_VALUES_PER_META_COL+1)])
+@pytest.fixture(params=[x for x in range(0, MAX_VALUES_PER_META_COL+1)])
 def metadata_columns(request, metadata_column_headers):
     """Make a metadata column header and column value dictionary."""
     template = 'val{}'
@@ -52,7 +52,7 @@ def metadata_columns(request, metadata_column_headers):
     return columns
 
 @pytest.fixture
-def metadata_random_columns(metadata_column_headers):
+def metadata_random_columns(seed, metadata_column_headers):
     """Make dictionary containing lists between 1 and
     `MAX_VALUES_PER_META_COL` in length."""
     def _rand_depth(max_: int):
