@@ -7,8 +7,12 @@
 from pandas import DataFrame
 from sortedcontainers import SortedDict
 
-def _datafilter(schema: SortedDict, datapool: DataFrame, filtered=[]) -> list:
+def _datafilter(schema: SortedDict, datapool: DataFrame, filtered=None) -> list:
     """The `filtered` parameter should only be used internally."""
+    # prevent mutable default parameter
+    if filtered is None:
+        filtered = []
+
     this_schema = schema.copy()
     header = None
     try:
