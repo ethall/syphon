@@ -23,6 +23,9 @@ def _datafilter(schema: SortedDict, datapool: DataFrame, filtered=None) -> list:
     except:
         raise
 
+    if header not in datapool.columns:
+        return filtered
+
     for value in datapool.get(header).drop_duplicates().values:
         new_pool = datapool.loc[datapool.get(header) == value]
         try:
@@ -42,7 +45,8 @@ def datafilter(schema: SortedDict, datapool: DataFrame) -> list:
         datapool (DataFrame): Data to filter.
 
     Returns:
-        list: The filtered `DataFrame` objects.
+        list: The filtered `DataFrame` objects. An empty list is
+            returned if no schema values could be found.
     """
     try:
         return _datafilter(schema, datapool)
