@@ -3,6 +3,8 @@ syphon
 
 > A data storage and management engine.
 
+#### *This repository has moved to https://github.com/tektronix/syphon*
+
 **syphon** is a Python package that provides a simple interface to perform common tasks on labelled data.  Its aim is to fit seamlessly into any automation pipeline that requires organization and collation of large datasets.
 
 Features
